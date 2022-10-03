@@ -18,7 +18,7 @@
  *
  *                        contract by: ens0.eth
  */
-pragma solidity ^0.8.13;
+pragma solidity ^0.8.14;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "erc721a/contracts/ERC721A.sol";
@@ -29,21 +29,44 @@ error ExceedsMaximumSupply();
 error FreeMintsNotRun();
 error FreeMintsAlreadyRun();
 
-contract WanderingWitch is ERC721A, Ownable {
-    uint256 public constant MINT_PRICE = 0.02;
-    uint16 public constant MAX_TOKENS = 10000;
+contract WanderingWitches is ERC721A, Ownable {
+    uint256 public mint1Price = 0.07 ether;
+    uint256 public mint3Price = 0.2 ether;
+    uint256 public mint5Price = 0.3 ether;
 
-    string public baseURI = "ipfs://QmQEYuMUB6TAJMstMjdYK8m9jTniQPio28PzMWCz7tuf8r/";
+    uint16 public constant MAX_TOKENS = 5622;
 
-    constructor() ERC721A("Wandering Witch", "WANDWITCH") {}
+    string public baseURI = "";
 
-    function summonWitch() public payable {
+    constructor() ERC721A("Wandering Witches", "WANDWITCH") {}
+
+    function mintWitch() public payable {
         unchecked {
             if(totalSupply() == 0) revert FreeMintsNotRun();
-            if(MINT_PRICE > msg.value) revert InsufficientEther();
+            if(mint1Price > msg.value) revert InsufficientEther();
             if(totalSupply() + 1 > MAX_TOKENS) revert ExceedsMaximumSupply();
 
             _mint(msg.sender, 1);
+        }
+    }
+
+    function mint3Witches() public payable {
+        unchecked {
+            if(totalSupply() == 0) revert FreeMintsNotRun();
+            if(mint3Price > msg.value) revert InsufficientEther();
+            if(totalSupply() + 3 > MAX_TOKENS) revert ExceedsMaximumSupply();
+
+            _mint(msg.sender, 3);
+        }
+    }
+
+    function mint5Witches() public payable {
+        unchecked {
+            if(totalSupply() == 0) revert FreeMintsNotRun();
+            if(mint5Price > msg.value) revert InsufficientEther();
+            if(totalSupply() + 5 > MAX_TOKENS) revert ExceedsMaximumSupply();
+
+            _mint(msg.sender, 5);
         }
     }
 
@@ -51,7 +74,7 @@ contract WanderingWitch is ERC721A, Ownable {
     function freeMints() external onlyOwner {
         unchecked {
             if(totalSupply() > 0) revert FreeMintsAlreadyRun();
-            _mint(msg.sender, 50);
+            _mint(msg.sender, 22);
         }
     }
 
@@ -65,5 +88,17 @@ contract WanderingWitch is ERC721A, Ownable {
 
     function setBaseURI(string memory newBaseURI) public onlyOwner {
         baseURI = newBaseURI;
+    }
+
+    function setMint1Price(uint256 newPrice) public onlyOwner {
+        mint1Price = newPrice;
+    }
+
+    function setMint3Price(uint256 newPrice) public onlyOwner {
+        mint3Price = newPrice;
+    }
+
+    function setMint5Price(uint256 newPrice) public onlyOwner {
+        mint5Price = newPrice;
     }
 }
